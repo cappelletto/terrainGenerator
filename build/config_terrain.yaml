@@ -1,0 +1,33 @@
+#YAML 1.0
+# terrainGenerator configuration file
+
+version: 1
+
+general:
+  verbosity:  1      #verbosity level 0-3
+
+template:
+  # filepath:   /home/cappelletto/Desktop/LAD_Test/
+  # geoTIFF file that will be used as template. Pixel resolution, NODATA mask, and extent will match the provided one
+  filename:   /home/cappelletto/Desktop/LAD_Test/M1_RAW_Bathymetry.tif
+
+output:
+  # filepath:   /home/cappelletto/
+  filename:   synth_terrain.tif
+  format:     tiff  # posible values: tiff, xyz, ply
+
+# Waveform function template:  Y = A.f(B.x + C) + D : amplitude x func(frequency.t + phase) + offset 
+parameters:        # Landing AUV parameters
+  waveform:  step
+  amplitude: 1.5   # A: Waveform amplitude (peak value)
+  frequency: 2.0   # B: Spatial frequency
+  phase:     0.0   # C: Spatial phase
+  offset:    0.5   # D: Offset
+  period:    4.0   # 1/B: reciprocal definition of spatial frequency 
+
+canvas:
+  resolution:     0.01   # [meters] per [pixel]
+  rotation:       0      # canvas rotation in degrees (CCW)
+  mode:           height # depth  (positive down) or height (positive up)
+  usenodatamask:  true   # indicates if exported geotiff will contain NODATA fields
+  nodata:        -9999   # defines default nodata value
