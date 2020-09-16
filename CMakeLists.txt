@@ -92,7 +92,8 @@ add_definitions( -DGIT_COMMIT="${GIT_INFO}" ) # Forward current git info as a si
 #target_link_libraries(lad_gdal ${OpenCV_LIBS} ${GDAL_LIBRARY})
 
 ############################ MAIN_TEST ####################
-add_executable(terrainGenerator   src/terrainGenerator.cpp
+add_executable(terrainGenerator   src/main.cpp
+                                  src/terrainGenerator.cpp                  
                                   ${GEOTIFF_MODULE}/src/geotiff.cpp
                                   ${PROJECT_HEADERS})
 

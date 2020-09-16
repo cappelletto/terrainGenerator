@@ -8,10 +8,23 @@
  * @copyright Copyright (c) 2020
  * 
  */
-#include "terrainGenerator.h"
 
-using std;
+#ifndef _TERRAIN_GENERATOR_H_
 
-namespace teg{
+#define _TERRAIN_GENERATOR_H_
+
+
+namespace tgen{
+    // configuration parameters
+
+
+    // global I/O methods
+
+
+    //constant definitions
+
 
 };
+
+
+#endif //_TERRAIN_GENERATOR_H_
