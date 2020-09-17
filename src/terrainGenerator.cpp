@@ -9,42 +9,65 @@
  * 
  */
 #include "terrainGenerator.h"
+// #include "options.h"
 
 using namespace std;
+using namespace teg;
 
-namespace teg{
-    enum CanvasType{
-        depthMap = -1,  // the map is positive down (standard bathymetry)
-        heightMap = 1   // the map is positive up (standard altimetry)
-    };
+/**
+ * @brief 
+ * 
+ * @param filename 
+ * @param param 
+ * @param func 
+ * @return YAML::Node 
+ */
+YAML::Node teg::readConfiguration(string filename, canvasParametersStruct *canvas, fnParametersStruct *func){
 
-    enum WaveFormType{
-        constant = 1,   // fixed value y = D
-        step,           // unitary step response, y=1 if t>0
-        ramp,           // slope=1 ramp defined for t>0
-        pulse,          // square pulse defined for a given period 0<= t <= T, where T:1/B
-        square,         // periodic squared signal 
-        pwm,            // similar to square, but with user defined duty-cycle
-        triangular,     // periodic triangular signal
-        saw,            // saw-shaped periodic signal
-        sine            // pure sinusoidal
-    };
+    cout << "Processing user defined configuration: [" <<  filename  << "]" << endl;
+    YAML::Node config = YAML::LoadFile(filename);
 
-    typedef struct{         // Waveform parameters as defined by template:
-                            // Y = A.func(B.x + C) + D : amplitude x func(frequency.t + phase) + offset 
-        WaveFormType type;           // waveform type
-        double amplitude;   // (A)   peak amplitude of the waveform
-        double period;      // (T:1/B) Spatial period of the wavefor if periodic. Signal duration if non periodic 
-        double phase;       // (C)   Spatial phase (offset)
-        double offset;      // (D)   Vertical offset (ordinate axis)
-        double frequency;   // (B)   Reciprocal of period
-    }fnParametersStruct;
+    int verb = 0;
+    if (config["general"]) {
+        if (config["general"]["verbosity"])
+            verb = config["general"]["verbosity"].as<int>(); //verbosity level
+    }
 
-    typedef struct{
-        int mode;           // +1 Height, -1 Depth
-        double resolution;  // meter per pixel
-        double rotation;    // default : 0
-        double nodatafield; // for geoTIFF export
-    }canvasParametersStruct;
+    if (config["template"]){
+        if (verb > teg::NO_VERBOSE)
+            cout << "[readConfiguration] template section present" << endl;
+        if (config["template"]["filename"])
+            cout << "Template file: " << config["template"]["filename"].as<string>() << endl;
+    }
 
-};
+    if (config["canvas"]){
+        if (verb > 0)
+            cout << "[readConfiguration] canvas section present" << endl;
+        if (config["canvas"]["resolution"])
+            canvas->resolution = config["canvas"]["resolution"].as<double>();
+        if (config["canvas"]["rotation"])
+            canvas->rotation = config["canvas"]["rotation"].as<double>();
+        if (config["canvas"]["mode"])
+            canvas->mode = config["canvas"]["mode"].as<int>();
+        if (config["canvas"]["nodata"])
+            canvas->nodata = config["canvas"]["nodata"].as<double>();
+    }
+
+    if (config["parameters"]){
+        if (verb > 0)
+            cout << "[readConfiguration] parameters section present" << endl;
+        if (config["parameters"]["amplitude"])
+            func->amplitude =   config["parameters"]["amplitude"].as<double>();
+        if (config["parameters"]["frequency"])
+            func->frequency =   config["parameters"]["frequency"].as<double>();
+        if (config["parameters"]["phase"])
+            func->phase =       config["parameters"]["phase"].as<double>();
+        if (config["parameters"]["offset"])
+            func->offset =      config["parameters"]["offset"].as<double>();
+        if (config["parameters"]["period"])
+            func->period =      config["parameters"]["period"].as<double>();
+    }
+
+    return config;
+
+} 

@@ -9,6 +9,7 @@
  * 
  */
 
+#include "terrainGenerator.h"
 #include "options.h"
 #include "geotiff.hpp" // Geotiff class definitions
 
@@ -17,6 +18,7 @@
 
 using namespace std;
 using namespace cv;
+using namespace teg;
 
 /*!
 	@fn		int main(int argc, char* argv[])
@@ -29,11 +31,12 @@ int main(int argc, char *argv[])
         return retval;
     // Parameters hierarchy
     // ARGS > CONFIG > DEFAULT (this)
-    // parameterStruct params = getDefaultParams(); // structure to hold configuration (populated with defaults).
-    // They will be updated if config file or command line arguments are provided
+    canvasParametersStruct canvas; //= getDefaultParams(); // structure to hold configuration (populated with defaults).
+    fnParametersStruct     function;
+    // Config structures will be updated if a config file or command line arguments are provided
     YAML::Node config;
-    // if (argConfig)     // check if config YAML file is provided
-    //     config = lad::readConfiguration(args::get(argConfig), &params); // populates params structure with content of the YAML file
+    if (argConfig)     // check if config YAML file is provided
+        config = teg::readConfiguration(args::get(argConfig), &canvas, &function); // populates params structure with content of the YAML file
 
     // Input file priority: must be defined either by the config.yaml or --input argument
     string inputFileName    = ""; // command arg or config defined

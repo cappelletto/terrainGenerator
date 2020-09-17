@@ -10,8 +10,7 @@
 
 #define _PROJECT_OPTIONS_H_
 
-#include <opencv2/core.hpp>
-
+#include <opencv2/core.hpp> // for the OpenCV version info
 #include "../external/args.hxx"
 #include <iostream>
 
@@ -19,10 +18,9 @@ args::ArgumentParser argParser("","");
 args::HelpFlag 	     argHelp(argParser, "help", "Display this help menu", {'h', "help"});
 args::CompletionFlag completion(argParser, {"complete"});	//TODO: figure out why is missing in current version of args.hxx
 
-args::ValueFlag <std::string> 	argInput(argParser, "input", "Input bathymetry map. TIFF file or XYZ point collection", {"input"});
-// args::Positional<std::string> 	argInput(argParser,     "input",    "Input bathymetry map. TIFF file or XYZ point collection");
+args::ValueFlag <std::string> 	argInput(argParser, "template", "Provides a file that will be used as template for the canvas definition, typ. a geoTIFF", {"input"});
 args::ValueFlag	<std::string> 	argOutput(argParser,    "output",   "Output file",{'o',"output"});
-args::ValueFlag	<int> 	        argVerbose(argParser,   "verbose",  "Define verbosity level",                                                   {"verbose"});
+args::ValueFlag	<int> 	        argVerbose(argParser,   "level",  "Define verbosity level",                                                   {"verbose"});
 args::ValueFlag	<int> 	        argNThreads(argParser,  "number",   "Define max number of threads",  {"nthreads"});
 args::ValueFlag <std::string>   argConfig(argParser,    "file.yaml","Provides path to file with user defied configuration", {"config"});
 
@@ -32,7 +30,11 @@ args::ValueFlag	<int> 	argIntParam(argParser,  "param",    "User defined paramet
 args::ValueFlag	<float> argFloatParam(argParser,"param",    "User defined parameter FLOAT for testing purposes",    {"float"});
 
 // Robot dimensions
-args::ValueFlag	<double> argRobotHeight(argParser,"height",  "User defined robot height in meters",    {"robotheight"});
+args::ValueFlag	<double> argParamPeriod    (argParser,"period",  "Waveform spatial period. This overrides the frequency when both are provided", {"period"});
+args::ValueFlag	<double> argParamFrequency (argParser,"period",  "Waveform spatial frequency, reciprocal definition of the period", {"frequency"});
+args::ValueFlag	<double> argParamAmplitude (argParser,"peak",    "Waveform peak amplitude", {"amplitude"});
+args::ValueFlag	<double> argParamOffset    (argParser,"offset",  "Offset in the vertizal (Z) axis", {"offset"});
+args::ValueFlag	<double> argParamPhase     (argParser,"phase",   "Waveform offset in the horizontal axis (XY)", {"phase"});
 
 const std::string green("\033[1;32m");
 const std::string yellow("\033[1;33m");
@@ -48,7 +50,7 @@ int initParser(int argc, char *argv[]){
     /* PARSER section */
     std::string descriptionString =
         "terrainGenerator - testing module part of [landing-area-detection] pipeline \
-    Compatible interface with geoTIFF bathymetry datasets via GDAL + OpenCV";
+         Compatible interface with geoTIFF bathymetry datasets via GDAL + OpenCV";
 
     argParser.Description(descriptionString);
     argParser.Epilog("Author: J. Cappelletto (GitHub: @cappelletto)\n");

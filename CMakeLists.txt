@@ -68,7 +68,7 @@ endif()
 set (GEOTIFF_MODULE external/geotiff)
 
 # Greedy include of all headers
-file(GLOB PROJECT_HEADERS include/*.h include/*.hpp)
+# file(GLOB PROJECT_HEADERS include/*.h include/*.hpp)
 include_directories(BEFORE ../include
                     include
                     ${OpenCV_INCLUDE_DIRS}
@@ -83,13 +83,6 @@ exec_program(
     OUTPUT_VARIABLE GIT_INFO )
 add_definitions( -DGIT_COMMIT="${GIT_INFO}" ) # Forward current git info as a single string
 
-############################ GDAL_TEST ####################
-#add_executable (lad_gdal  src/gdal_test.cpp
-#                          ${GEOTIFF_MODULE}/src/geotiff.cpp
-#                          ${PROJECT_HEADERS})
-
-#target_compile_options(lad_gdal PUBLIC -std=c++11)
-#target_link_libraries(lad_gdal ${OpenCV_LIBS} ${GDAL_LIBRARY})
 
 ############################ MAIN_TEST ####################
 add_executable(terrainGenerator   src/main.cpp
