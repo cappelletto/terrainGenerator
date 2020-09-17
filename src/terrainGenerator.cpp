@@ -9,7 +9,6 @@
  * 
  */
 #include "terrainGenerator.h"
-// #include "options.h"
 
 using namespace std;
 using namespace teg;

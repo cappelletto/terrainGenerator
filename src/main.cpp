@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
         return retval;
     // Parameters hierarchy
     // ARGS > CONFIG > DEFAULT (this)
+    // TODO : add get default values for both structures
     canvasParametersStruct canvas; //= getDefaultParams(); // structure to hold configuration (populated with defaults).
     fnParametersStruct     function;
     // Config structures will be updated if a config file or command line arguments are provided
@@ -40,9 +41,7 @@ int main(int argc, char *argv[])
 
     // Input file priority: must be defined either by the config.yaml or --input argument
     string inputFileName    = ""; // command arg or config defined
-    string inputFilePath    = ""; // can be retrieved from the fully qualified inputFileName 
-    string outputFilePrefix = ""; // none, output filenames will be the same as the standard
-    string outputFilePath   = ""; // same relative folder
+    string outputFileName   = ""; // same relative folder
 
     // // override defaults or config file with command provided values (DEFAULT < CONFIG < ARGUMENT)
     // if (argAlphaRadius)     params.alphaShapeRadius = args::get(argAlphaRadius);
