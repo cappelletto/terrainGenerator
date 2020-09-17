@@ -18,7 +18,7 @@ args::ArgumentParser argParser("","");
 args::HelpFlag 	     argHelp(argParser, "help", "Display this help menu", {'h', "help"});
 args::CompletionFlag completion(argParser, {"complete"});	//TODO: figure out why is missing in current version of args.hxx
 
-args::ValueFlag <std::string> 	argInput(argParser, "template", "Provides a file that will be used as template for the canvas definition, typ. a geoTIFF", {"input"});
+args::ValueFlag <std::string> 	argTemplate(argParser,     "template", "Provides a file that will be used as template for the canvas definition, typ. a geoTIFF", {"template"});
 args::ValueFlag	<std::string> 	argOutput(argParser,    "output",   "Output file",{'o',"output"});
 args::ValueFlag	<int> 	        argVerbose(argParser,   "level",  "Define verbosity level",                                                   {"verbose"});
 args::ValueFlag	<int> 	        argNThreads(argParser,  "number",   "Define max number of threads",  {"nthreads"});

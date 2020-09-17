@@ -40,22 +40,21 @@ int main(int argc, char *argv[])
         config = teg::readConfiguration(args::get(argConfig), &canvas, &function); // populates params structure with content of the YAML file
 
     // Input file priority: must be defined either by the config.yaml or --input argument
-    string inputFileName    = ""; // command arg or config defined
+    string templateFileName = ""; // command arg or config defined
     string outputFileName   = ""; // same relative folder
+    int verbosityLevel      = teg::NO_VERBOSE;
+    int numThreads          = teg::N_MAX_THREAD;
 
-    // // override defaults or config file with command provided values (DEFAULT < CONFIG < ARGUMENT)
-    // if (argAlphaRadius)     params.alphaShapeRadius = args::get(argAlphaRadius);
-    // if (argGroundThreshold) params.groundThreshold  = args::get(argGroundThreshold);
-    // if (argHeightThreshold) params.heightThreshold  = args::get(argHeightThreshold);
-    // if (argSlopeThreshold)  params.slopeThreshold   = args::get(argSlopeThreshold);
-    // if (argRobotHeight)     params.robotHeight      = args::get(argRobotHeight);
-    // if (argRobotLength)     params.robotLength      = args::get(argRobotLength);
-    // if (argRobotWidth)      params.robotWidth       = args::get(argRobotWidth);
-    // if (argProtrusionSize)  params.protrusionSize   = args::get(argProtrusionSize);
-    // if (argRotation){
-    //                         params.rotation         = args::get(argRotation);
-    //                         params.fixRotation      = true;
-    // }   
+    if (argTemplate)       templateFileName    = args::get(argTemplate);
+    if (argOutput)         outputFileName      = args::get(argOutput);
+    if (argVerbose)        verbosityLevel      = args::get(argVerbose);
+    if (argNThreads)       numThreads          = args::get(argNThreads);
+    if (argParamAmplitude) function.amplitude  = args::get(argParamAmplitude);
+    if (argParamFrequency) function.frequency  = args::get(argParamFrequency);
+    if (argParamPeriod)    function.period     = args::get(argParamPeriod);
+    if (argParamPhase)     function.phase      = args::get(argParamPhase);
+    if (argParamOffset)    function.offset     = args::get(argParamOffset);
+
     //**************************************************************************
     /* Summary list parameters */
     // cout << yellow << "****** Summary **********************************" << reset << endl;
