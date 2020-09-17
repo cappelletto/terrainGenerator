@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)  # For legacy system compatibility.
+cmake_minimum_required(VERSION 3.0)  # For legacy system compatibility.
 
 set(CMAKE_COLOR_MAKEFILE ON)  # For fancy colouring scheme
 if (${FORCE_COLORED_OUTPUT})
