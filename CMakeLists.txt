@@ -85,15 +85,16 @@ add_definitions( -DGIT_COMMIT="${GIT_INFO}" ) # Forward current git info as a si
 
 
 ############################ MAIN_TEST ####################
-add_executable(terrainGenerator   src/main.cpp
-                                  src/terrainGenerator.cpp                  
+add_executable(terrainGenerator   src/terrainGenerator.cpp                  
+                                  src/main.cpp
                                   ${GEOTIFF_MODULE}/src/geotiff.cpp
                                   ${PROJECT_HEADERS})
+                                  
 
 #find_path(yaml-cpp_INCLUDE_DIRS yaml-cpp/yaml.h )
 #message (${yaml-cpp_INCLUDE_DIRS})
 
-target_compile_options(terrainGenerator PUBLIC -std=c++11)
+target_compile_options(terrainGenerator PUBLIC -std=c++17)
 target_link_libraries(terrainGenerator ${OpenCV_LIBS} ${GDAL_LIBRARY} yaml-cpp)
 
 # Define install target for main testing module

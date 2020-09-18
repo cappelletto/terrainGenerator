@@ -19,8 +19,6 @@
 #include <stdexcept>
 #include <vector>
 
-// #include "options.h"
-
 #include <yaml-cpp/yaml.h>
 
 namespace teg{
@@ -28,6 +26,13 @@ namespace teg{
     //constant definitions
     const int N_MAX_THREAD = 24;
     
+    const std::string green("\033[1;32m");
+    const std::string yellow("\033[1;33m");
+    const std::string cyan("\033[1;36m");
+    const std::string red("\033[1;31m");
+    const std::string reset("\033[0m");
+    const std::string highlight("\033[30;43m");
+
     enum VerbosityLevel{
         NO_VERBOSE = 0,
         LOW_VERBOSITY,
@@ -69,7 +74,7 @@ namespace teg{
         double nodata;      // for geoTIFF export
     }canvasParametersStruct;
 
-
+    void printParams(teg::canvasParametersStruct , teg::fnParametersStruct ); // populate paras structure with default values
     void useDefaults(teg::canvasParametersStruct*, teg::fnParametersStruct*); // populate paras structure with default values
     YAML::Node readConfiguration(std::string file, teg::canvasParametersStruct*, teg::fnParametersStruct*); // populates params structure with content of the YAML file
 

@@ -9,9 +9,9 @@
  * 
  */
 
-#include "terrainGenerator.h"
 #include "options.h"
-#include "geotiff.hpp" // Geotiff class definitions
+#include "terrainGenerator.h"
+// #include "geotiff.hpp" // Geotiff class definitions
 
 #include <opencv2/core.hpp>
 #include <yaml-cpp/yaml.h>
@@ -26,7 +26,8 @@ using namespace teg;
 */
 int main(int argc, char *argv[])
 {
-    int retval = initParser(argc, argv);   // initial argument validation, populates arg parsing structure args
+    int retval;
+   // int retval = initParser(argc, argv);   // initial argument validation, populates arg parsing structure args
     if (retval != 0)  // some error ocurred, we have been signaled to stop
         return retval;
     // Parameters hierarchy
@@ -35,11 +36,12 @@ int main(int argc, char *argv[])
     // Second, we parse the config file (YAML) if any
     // Third, we parse the CLI arguments, if available
 
-    // TODO : add get default values for both structures
+    // FIRST
     canvasParametersStruct canvas; //= getDefaultParams(); // structure to hold configuration (populated with defaults).
     fnParametersStruct     function;
     teg::useDefaults (&canvas, &function);
     // Config structures will be updated if a config file or command line arguments are provided
+    // SECOND
     YAML::Node config;
     if (argConfig)     // check if config YAML file is provided
         config = teg::readConfiguration(args::get(argConfig), &canvas, &function); // populates params structure with content of the YAML file
@@ -50,8 +52,7 @@ int main(int argc, char *argv[])
     int verbosityLevel      = teg::NO_VERBOSE;
     int numThreads          = teg::N_MAX_THREAD;
 
-    // 
-
+    // THIRD
     if (argTemplate)       templateFileName    = args::get(argTemplate);
     if (argOutput)         outputFileName      = args::get(argOutput);
     if (argVerbose)        verbosityLevel      = args::get(argVerbose);
@@ -78,14 +79,16 @@ int main(int argc, char *argv[])
 
     //**************************************************************************
     /* Summary list parameters */
-    // cout << yellow << "****** Summary **********************************" << reset << endl;
-    // cout << "Input file:   \t" << inputFileName << endl;
-    // cout << "Input path:   \t" << inputFilePath << endl;
+    cout << yellow << "****** Summary **********************************" << reset << endl;
+    cout << "Template file:   \t" << templateFileName << endl;
+    cout << "Output file:     \t" << outputFileName << endl;
+    cout << "Verbosity level: \t" << verbosityLevel << endl;
+    cout << "Num. threads:    \t" << numThreads << endl;
+    teg::printParams(canvas, function);
     // cout << "Output prefix:\t" << outputFilePrefix << endl;
     // cout << "Output path:  \t" << outputFilePath << endl;
     // cout << "fParam:       \t" << fParam << endl;
     // cout << "iParam:       \t" << iParam << endl;
-    // params.robotDiagonal = sqrt(params.robotWidth*params.robotWidth + params.robotLength*params.robotLength); 
     // lad::printParams(&params);
 
     // cout << "Verbose level:\t\t" << pipeline.verbosity << endl;    

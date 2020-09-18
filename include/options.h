@@ -6,25 +6,26 @@
  * @author Jose Cappelletto
  */
 
-#ifndef _PROJECT_OPTIONS_H_
-
-#define _PROJECT_OPTIONS_H_
+#ifndef _TEG_OPTIONS_H_
+#define _TEG_OPTIONS_H_
 
 #include <opencv2/core.hpp> // for the OpenCV version info
 #include <args.hxx>
 #include <iostream>
+#include "terrainGenerator.h"
+
 using namespace std;
+using namespace teg;
 
 args::ArgumentParser argParser("","");
 args::HelpFlag 	     argHelp(argParser, "help", "Display this help menu", {'h', "help"});
-args::CompletionFlag completion(argParser, {"complete"});	//TODO: figure out why is missing in current version of args.hxx
+// args::CompletionFlag completion(argParser, {"complete"});	//TODO: figure out why is missing in current version of args.hxx
 
 args::ValueFlag <std::string> 	argTemplate(argParser,     "template", "Provides a file that will be used as template for the canvas definition, typ. a geoTIFF", {"template"});
 args::ValueFlag	<std::string> 	argOutput(argParser,    "output",   "Output file",{'o',"output"});
-args::ValueFlag	<int> 	        argVerbose(argParser,   "level",  "Define verbosity level",                                                   {"verbose"});
+args::ValueFlag	<int> 	        argVerbose(argParser,   "level",  "Define verbosity level",          {"verbose"});
 args::ValueFlag	<int> 	        argNThreads(argParser,  "number",   "Define max number of threads",  {"nthreads"});
 args::ValueFlag <std::string>   argConfig(argParser,    "file.yaml","Provides path to file with user defied configuration", {"config"});
-
 
 // Free parameters for debugging
 args::ValueFlag	<int> 	argIntParam(argParser,  "param",    "User defined parameter INTEGER for testing purposes",  {"int"});
@@ -38,15 +39,8 @@ args::ValueFlag	<double> argParamAmplitude (argParser,"peak",    "Waveform peak 
 args::ValueFlag	<double> argParamOffset    (argParser,"offset",  "Offset in the vertizal (Z) axis", {"offset"});
 args::ValueFlag	<double> argParamPhase     (argParser,"phase",   "Waveform offset in the horizontal axis (XY)", {"phase"});
 
-const std::string green("\033[1;32m");
-const std::string yellow("\033[1;33m");
-const std::string cyan("\033[1;36m");
-const std::string red("\033[1;31m");
-const std::string reset("\033[0m");
-const std::string highlight("\033[30;43m");
 
-using namespace std;
-
+// int initParser(int argc, char *argv[]);
 int initParser(int argc, char *argv[]){
         //*********************************************************************************
     /* PARSER section */

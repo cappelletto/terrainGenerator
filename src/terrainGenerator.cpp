@@ -13,7 +13,41 @@
 using namespace std;
 using namespace teg;
 
+/**
+ * @brief 
+ * 
+ * @param canvas 
+ * @param func 
+ */
+void teg::printParams(teg::canvasParametersStruct  canvas, teg::fnParametersStruct  func){
+    //CANVAS
+    cout << yellow << "Canvas: " << reset << endl;
+    //     int mode;           // +1 Height, -1 Depth
+    //     double resolution;  // meter per pixel
+    //     double rotation;    // default : 0
+    //     double nodata;      // for geoTIFF export
+    // }canvasParametersStruct;
 
+    //FUNCTION
+    //     WaveFormType type;           // waveform type
+    //     double amplitude;   // (A)   peak amplitude of the waveform
+    //     double period;      // (T:1/B) Spatial period of the wavefor if periodic. Signal duration if non periodic 
+    //     double phase;       // (C)   Spatial phase (offset)
+    //     double offset;      // (D)   Vertical offset (ordinate axis)
+    //     double frequency;   // (B)   Reciprocal of period
+    // }fnParametersStruct;
+
+
+
+
+}
+
+/**
+ * @brief 
+ * 
+ * @param canvas 
+ * @param func 
+ */
 void teg::useDefaults(teg::canvasParametersStruct *canvas, teg::fnParametersStruct *func){
     canvas->mode = teg::heightMap; //positive up
     canvas->nodata = -9999;
