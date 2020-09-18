@@ -69,9 +69,13 @@ namespace teg{
 
     typedef struct{
         int mode;           // +1 Height, -1 Depth
-        double resolution;  // meter per pixel
+        double resolution;  // as meters per pixel
         double rotation;    // default : 0
         double nodata;      // for geoTIFF export
+        double xmin;        // boundariers in meters of the map canvas
+        double xmax;
+        double ymin;
+        double ymax;        // no min < max validation is performed (this allows reverse-definition of the canvas)
     }canvasParametersStruct;
 
     void printParams(teg::canvasParametersStruct , teg::fnParametersStruct ); // populate paras structure with default values

@@ -31,3 +31,8 @@ canvas:
   mode:           0      # 0:depth  (positive down) or 1:height (positive up)
   usenodatamask:  true   # indicates if exported geotiff will contain NODATA fields
   nodata:        -5555   # defines default nodata value
+  extent:                # canvas limits in meters 
+    xmin:         0     
+    xmax:         10
+    ymin:         0
+    ymax:         5

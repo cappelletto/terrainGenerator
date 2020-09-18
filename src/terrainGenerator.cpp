@@ -26,6 +26,7 @@ void teg::printParams(teg::canvasParametersStruct  canvas, teg::fnParametersStru
     cout << "\tresolution:" << canvas.resolution   << "\t[m/pixel]" << endl;
     cout << "\trotation:  " << canvas.rotation     << "\t[degrees]" << endl;
     cout << "\tnodata:    " << canvas.nodata       << endl;
+    cout << cyan << "\tExtent:" << reset <<"\tX=[ " << canvas.xmin << ", " << canvas.xmax << " ]\tY=[ " <<  canvas.ymin << ", " << canvas.ymax << " ]" << endl;
 
     cout << cyan << "Function: " << reset << endl;
     cout << "\ttype:       " << func.type << endl;
@@ -49,6 +50,10 @@ void teg::useDefaults(teg::canvasParametersStruct *canvas, teg::fnParametersStru
     canvas->nodata = -9999;
     canvas->resolution = 0.01;  //10 mm per pixel
     canvas->rotation = 0; // no rotation
+    canvas->xmin = 0;
+    canvas->ymin = 0;
+    canvas->xmax = 1;
+    canvas->ymax = 1;   // 1m x 1m rectangle
 
     func->type = teg::constant;
     func->amplitude = 1.0;
@@ -95,6 +100,12 @@ YAML::Node teg::readConfiguration(string filename, canvasParametersStruct *canva
             canvas->mode = config["canvas"]["mode"].as<int>();
         if (config["canvas"]["nodata"])
             canvas->nodata = config["canvas"]["nodata"].as<double>();
+        if (config["canvas"]["extent"]){
+            canvas->xmin = config["canvas"]["extent"]["xmin"].as<double>();
+            canvas->xmax = config["canvas"]["extent"]["xmax"].as<double>();
+            canvas->ymin = config["canvas"]["extent"]["ymin"].as<double>();
+            canvas->ymax = config["canvas"]["extent"]["ymax"].as<double>();
+        }
     }
 
     if (config["parameters"]){
