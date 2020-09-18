@@ -21,25 +21,21 @@ using namespace teg;
  */
 void teg::printParams(teg::canvasParametersStruct  canvas, teg::fnParametersStruct  func){
     //CANVAS
-    cout << yellow << "Canvas: " << reset << endl;
-    //     int mode;           // +1 Height, -1 Depth
-    //     double resolution;  // meter per pixel
-    //     double rotation;    // default : 0
-    //     double nodata;      // for geoTIFF export
-    // }canvasParametersStruct;
+    cout << cyan << "Canvas: " << reset << endl;
+    cout << "\tmode:      " << ((canvas.mode == teg::depthMap) ? "depthMap" : "heightMap") << endl;
+    cout << "\tresolution:" << canvas.resolution   << "\t[m/pixel]" << endl;
+    cout << "\trotation:  " << canvas.rotation     << "\t[degrees]" << endl;
+    cout << "\tnodata:    " << canvas.nodata       << endl;
 
-    //FUNCTION
-    //     WaveFormType type;           // waveform type
-    //     double amplitude;   // (A)   peak amplitude of the waveform
-    //     double period;      // (T:1/B) Spatial period of the wavefor if periodic. Signal duration if non periodic 
-    //     double phase;       // (C)   Spatial phase (offset)
-    //     double offset;      // (D)   Vertical offset (ordinate axis)
-    //     double frequency;   // (B)   Reciprocal of period
-    // }fnParametersStruct;
+    cout << cyan << "Function: " << reset << endl;
+    cout << "\ttype:       " << func.type << endl;
+    cout << "\tamplitude:  " << func.amplitude  << "\t[m]" << endl;
+    cout << "\tperiod:     " << func.period     << "\t[m]" << endl;
+    cout << "\tphase:      " << func.phase      << "\t[m]" << endl;
+    cout << "\toffset:     " << func.offset     << "\t[m]" << endl;
+    cout << "\tfrequency:  " << func.frequency  << "\t[1/m]" << endl;
 
-
-
-
+    cout << endl;
 }
 
 /**

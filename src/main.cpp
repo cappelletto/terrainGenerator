@@ -26,8 +26,8 @@ using namespace teg;
 */
 int main(int argc, char *argv[])
 {
-    int retval;
-   // int retval = initParser(argc, argv);   // initial argument validation, populates arg parsing structure args
+    // int retval;
+   int retval = initParser(argc, argv);   // initial argument validation, populates arg parsing structure args
     if (retval != 0)  // some error ocurred, we have been signaled to stop
         return retval;
     // Parameters hierarchy
@@ -36,23 +36,26 @@ int main(int argc, char *argv[])
     // Second, we parse the config file (YAML) if any
     // Third, we parse the CLI arguments, if available
 
-    // FIRST
+    // FIRST +++++++++++++++++++++++++++++++++++++++++++++++++++
     canvasParametersStruct canvas; //= getDefaultParams(); // structure to hold configuration (populated with defaults).
     fnParametersStruct     function;
     teg::useDefaults (&canvas, &function);
     // Config structures will be updated if a config file or command line arguments are provided
-    // SECOND
+    // SECOND +++++++++++++++++++++++++++++++++++++++++++++++++++
     YAML::Node config;
+    cout << "Do we have argConfig?" << endl;
     if (argConfig)     // check if config YAML file is provided
+    {
+        cout << "YES" << endl;
         config = teg::readConfiguration(args::get(argConfig), &canvas, &function); // populates params structure with content of the YAML file
 
+    }
     // Input file priority: must be defined either by the config.yaml or --input argument
     string templateFileName = ""; // command arg or config defined
     string outputFileName   = ""; // same relative folder
     int verbosityLevel      = teg::NO_VERBOSE;
     int numThreads          = teg::N_MAX_THREAD;
-
-    // THIRD
+    // THIRD +++++++++++++++++++++++++++++++++++++++++++++++++++
     if (argTemplate)       templateFileName    = args::get(argTemplate);
     if (argOutput)         outputFileName      = args::get(argOutput);
     if (argVerbose)        verbosityLevel      = args::get(argVerbose);

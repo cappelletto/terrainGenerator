@@ -40,7 +40,7 @@ namespace teg{
     };
 
     enum CanvasType{
-        depthMap = -1,  // the map is positive down (standard bathymetry)
+        depthMap =  0,  // the map is positive down (standard bathymetry)
         heightMap = 1   // the map is positive up (standard altimetry)
     };
 
