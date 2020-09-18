@@ -70,6 +70,7 @@ namespace teg{
     }canvasParametersStruct;
 
 
+    void useDefaults(teg::canvasParametersStruct*, teg::fnParametersStruct*); // populate paras structure with default values
     YAML::Node readConfiguration(std::string file, teg::canvasParametersStruct*, teg::fnParametersStruct*); // populates params structure with content of the YAML file
 
 

@@ -13,6 +13,7 @@
 #include <opencv2/core.hpp> // for the OpenCV version info
 #include <args.hxx>
 #include <iostream>
+using namespace std;
 
 args::ArgumentParser argParser("","");
 args::HelpFlag 	     argHelp(argParser, "help", "Display this help menu", {'h', "help"});
@@ -29,9 +30,10 @@ args::ValueFlag <std::string>   argConfig(argParser,    "file.yaml","Provides pa
 args::ValueFlag	<int> 	argIntParam(argParser,  "param",    "User defined parameter INTEGER for testing purposes",  {"int"});
 args::ValueFlag	<float> argFloatParam(argParser,"param",    "User defined parameter FLOAT for testing purposes",    {"float"});
 
-// Robot dimensions
+// Waveform parameters
+args::ValueFlag	<string> argParamType      (argParser,"type",    "Type of waveform: constant, step, pulse, ramp, square, pwm, triangular, saw, sine", {"type"});
 args::ValueFlag	<double> argParamPeriod    (argParser,"period",  "Waveform spatial period. This overrides the frequency when both are provided", {"period"});
-args::ValueFlag	<double> argParamFrequency (argParser,"period",  "Waveform spatial frequency, reciprocal definition of the period", {"frequency"});
+args::ValueFlag	<double> argParamFrequency (argParser,"frequency",  "Waveform spatial frequency, reciprocal definition of the period", {"frequency"});
 args::ValueFlag	<double> argParamAmplitude (argParser,"peak",    "Waveform peak amplitude", {"amplitude"});
 args::ValueFlag	<double> argParamOffset    (argParser,"offset",  "Offset in the vertizal (Z) axis", {"offset"});
 args::ValueFlag	<double> argParamPhase     (argParser,"phase",   "Waveform offset in the horizontal axis (XY)", {"phase"});

@@ -13,6 +13,21 @@
 using namespace std;
 using namespace teg;
 
+
+void teg::useDefaults(teg::canvasParametersStruct *canvas, teg::fnParametersStruct *func){
+    canvas->mode = teg::heightMap; //positive up
+    canvas->nodata = -9999;
+    canvas->resolution = 0.01;  //10 mm per pixel
+    canvas->rotation = 0; // no rotation
+
+    func->type = teg::constant;
+    func->amplitude = 1.0;
+    func->frequency = 1.0;
+    func->offset    = 0.0;
+    func->period    = 1.0;
+    func->phase     = 0.0;
+}
+
 /**
  * @brief 
  * 
