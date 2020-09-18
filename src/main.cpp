@@ -31,6 +31,10 @@ int main(int argc, char *argv[])
         return retval;
     // Parameters hierarchy
     // ARGS > CONFIG > DEFAULT (this)
+    // First, we populate the structures with default values
+    // Second, we parse the config file (YAML) if any
+    // Third, we parse the CLI arguments, if available
+    
     // TODO : add get default values for both structures
     canvasParametersStruct canvas; //= getDefaultParams(); // structure to hold configuration (populated with defaults).
     fnParametersStruct     function;

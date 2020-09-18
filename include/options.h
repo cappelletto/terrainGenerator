@@ -11,7 +11,7 @@
 #define _PROJECT_OPTIONS_H_
 
 #include <opencv2/core.hpp> // for the OpenCV version info
-#include "../external/args.hxx"
+#include <args.hxx>
 #include <iostream>
 
 args::ArgumentParser argParser("","");
@@ -64,6 +64,7 @@ int initParser(int argc, char *argv[]){
     catch (const args::Completion &e)
     {
         cout << e.what();
+        cout << "tried to autocomplete" << endl;
         return 0;
     }
 
