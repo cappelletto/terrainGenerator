@@ -63,7 +63,6 @@ int initParser(int argc, char *argv[]){
         cout << "tried to autocomplete" << endl;
         return 0;
     }
-
     catch (args::Help)
     { // if argument asking for help, show this message
         cout << argParser;

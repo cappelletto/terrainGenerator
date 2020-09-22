@@ -16,6 +16,19 @@ using namespace teg;
 /**
  * @brief 
  * 
+ * @param x 
+ * @param y 
+ * @param f 
+ * @return double 
+ */
+double teg::parametricTransform (double x, double y, teg::scaleParamStruct f){
+    return (f.ax*x + f.ay*y + f.c);
+}
+
+
+/**
+ * @brief 
+ * 
  * @param canvas 
  * @param func 
  */

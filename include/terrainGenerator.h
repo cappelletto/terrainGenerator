@@ -55,7 +55,6 @@ namespace teg{
         saw,            // saw-shaped periodic signal
         sine            // pure sinusoidal
     };
-
     // configuration parameters
     typedef struct{         // Waveform parameters as defined by template:
                             // Y = A.func(B.x + C) + D : amplitude x func(frequency.t + phase) + offset 
@@ -78,9 +77,17 @@ namespace teg{
         double ymax;        // no min < max validation is performed (this allows reverse-definition of the canvas)
     }canvasParametersStruct;
 
+    typedef struct{
+        double ax;
+        double ay;
+        double c;
+    }scaleParamStruct;
+
     void printParams(teg::canvasParametersStruct , teg::fnParametersStruct ); // populate paras structure with default values
     void useDefaults(teg::canvasParametersStruct*, teg::fnParametersStruct*); // populate paras structure with default values
     YAML::Node readConfiguration(std::string file, teg::canvasParametersStruct*, teg::fnParametersStruct*); // populates params structure with content of the YAML file
+
+    double parametricTransform (double x, double y, teg::scaleParamStruct f);
 
 
 };

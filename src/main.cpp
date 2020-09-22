@@ -27,9 +27,15 @@ using namespace teg;
 int main(int argc, char *argv[])
 {
     // int retval;
-   int retval = initParser(argc, argv);   // initial argument validation, populates arg parsing structure args
-    if (retval != 0)  // some error ocurred, we have been signaled to stop
+    int retval = initParser(argc, argv);   // initial argument validation, populates arg parsing structure args
+    if (retval != 0){  // some error ocurred, we have been signaled to stop
+        cout << red << "[main] Some error ocurred when parsing provided arguments" << endl;
         return retval;
+    }
+    if (argc<=1){
+        cout << "[main] No argument provided, please use --help to show available options" << endl;
+        return 0;
+    }
     // Parameters hierarchy
     // ARGS > CONFIG > DEFAULT (this)
     // First, we populate the structures with default values
@@ -37,24 +43,27 @@ int main(int argc, char *argv[])
     // Third, we parse the CLI arguments, if available
 
     // FIRST +++++++++++++++++++++++++++++++++++++++++++++++++++
-    canvasParametersStruct canvas; //= getDefaultParams(); // structure to hold configuration (populated with defaults).
+    canvasParametersStruct canvas;      // structure to hold configuration (to be populated with defaults).
     fnParametersStruct     function;
     teg::useDefaults (&canvas, &function);
     // Config structures will be updated if a config file or command line arguments are provided
     // SECOND +++++++++++++++++++++++++++++++++++++++++++++++++++
     YAML::Node config;
-    cout << "Do we have argConfig?" << endl;
+    // cout << "Do we have argConfig?" << endl;
     if (argConfig)     // check if config YAML file is provided
     {
-        cout << "YES" << endl;
+        // cout << "YES" << endl;
         config = teg::readConfiguration(args::get(argConfig), &canvas, &function); // populates params structure with content of the YAML file
-
     }
     // Input file priority: must be defined either by the config.yaml or --input argument
     string templateFileName = ""; // command arg or config defined
     string outputFileName   = ""; // same relative folder
     int verbosityLevel      = teg::NO_VERBOSE;
     int numThreads          = teg::N_MAX_THREAD;
+    if (config["general"]) {
+        if (config["general"]["verbosity"])
+            verbosityLevel = config["general"]["verbosity"].as<int>(); //verbosity level
+    }
     // THIRD +++++++++++++++++++++++++++++++++++++++++++++++++++
     if (argTemplate)       templateFileName    = args::get(argTemplate);
     if (argOutput)         outputFileName      = args::get(argOutput);
@@ -88,11 +97,10 @@ int main(int argc, char *argv[])
     cout << "Verbosity level: \t" << verbosityLevel << endl;
     cout << "Num. threads:    \t" << numThreads << endl;
     teg::printParams(canvas, function);
-    // cout << "Output prefix:\t" << outputFilePrefix << endl;
-    // cout << "Output path:  \t" << outputFilePath << endl;
-    // cout << "fParam:       \t" << fParam << endl;
-    // cout << "iParam:       \t" << iParam << endl;
-    // lad::printParams(&params);
+
+    // At this point, we have combined default and user defined parameters
+    // Let's proceed to create the canvas and start populating it. First, we need to determine the size of the storage unit
+    // As we are planning to use geoTIFF as containers, we should point directly to its matrix structure
 
     // cout << "Verbose level:\t\t" << pipeline.verbosity << endl;    
     // cout << "Multithreaded version, max concurrent threads: [" << yellow << nThreads << reset << "]" << endl;
