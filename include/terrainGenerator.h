@@ -75,6 +75,9 @@ namespace teg{
         double xmax;
         double ymin;
         double ymax;        // no min < max validation is performed (this allows reverse-definition of the canvas)
+
+        int rows;
+        int cols;
     }canvasParametersStruct;
 
     typedef struct{
@@ -83,6 +86,7 @@ namespace teg{
         double c;
     }scaleParamStruct;
 
+    void generateTerrain(teg::canvasParametersStruct , teg::fnParametersStruct, cv::Mat); // populate image structure with the generated map
     void printParams(teg::canvasParametersStruct , teg::fnParametersStruct ); // populate paras structure with default values
     void useDefaults(teg::canvasParametersStruct*, teg::fnParametersStruct*); // populate paras structure with default values
     YAML::Node readConfiguration(std::string file, teg::canvasParametersStruct*, teg::fnParametersStruct*); // populates params structure with content of the YAML file

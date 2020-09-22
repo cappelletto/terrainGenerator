@@ -11,8 +11,10 @@
 
 #include "options.h"
 #include "terrainGenerator.h"
+#include "ogrsf_frmts.h"
 // #include "geotiff.hpp" // Geotiff class definitions
 
+#include <geotiff.hpp>
 #include <opencv2/core.hpp>
 #include <yaml-cpp/yaml.h>
 
@@ -57,12 +59,16 @@ int main(int argc, char *argv[])
     }
     // Input file priority: must be defined either by the config.yaml or --input argument
     string templateFileName = ""; // command arg or config defined
-    string outputFileName   = ""; // same relative folder
+    string outputFileName   = "default.tif"; // same relative folder
     int verbosityLevel      = teg::NO_VERBOSE;
     int numThreads          = teg::N_MAX_THREAD;
     if (config["general"]) {
         if (config["general"]["verbosity"])
             verbosityLevel = config["general"]["verbosity"].as<int>(); //verbosity level
+    }
+    if (config["output"]) {
+        if (config["output"]["filename"])
+            outputFileName = config["output"]["filename"].as<string>(); //verbosity level
     }
     // THIRD +++++++++++++++++++++++++++++++++++++++++++++++++++
     if (argTemplate)       templateFileName    = args::get(argTemplate);
@@ -101,10 +107,45 @@ int main(int argc, char *argv[])
     // At this point, we have combined default and user defined parameters
     // Let's proceed to create the canvas and start populating it. First, we need to determine the size of the storage unit
     // As we are planning to use geoTIFF as containers, we should point directly to its matrix structure
+    canvas.cols = ceil(fabs((canvas.xmax - canvas.xmin) / canvas.resolution));
+    canvas.rows = ceil(((canvas.ymax - canvas.ymin) / canvas.resolution));
+    cout << "[main] Canvas size: [ " << canvas.cols << " x " << canvas.rows << "]" << endl;
+    // this is the cvMat container
+    cv::Mat rasterData(canvas.rows, canvas.cols, CV_64FC1, canvas.nodata);
 
-    // cout << "Verbose level:\t\t" << pipeline.verbosity << endl;    
-    // cout << "Multithreaded version, max concurrent threads: [" << yellow << nThreads << reset << "]" << endl;
-    // cout << yellow << "*************************************************" << reset << endl << endl;
+    //let's populate the image with the corresponding map
+    teg::generateTerrain (canvas, function, rasterData);
+
+    GDALDataset *geotiffDataset;
+    GDALDriver *driverGeotiff;
+    GDALRasterBand *geotiffBand; // also declare pointers for Geotiff
+
+    int nrows  = rasterData.rows; //layerDimensions[1]
+    int ncols  = rasterData.cols; //layerDimensions[0]
+
+    // // cout << "[r.writeLayer] Dataset dimensions (COL x ROW): [" << ncols << "] x [" << nrows << "]\tNoData = [" << noData << "]" << endl; 
+
+    char **optionsForTIFF = NULL;
+    optionsForTIFF = CSLSetNameValue(optionsForTIFF, "COMPRESS", "LZW");
+    driverGeotiff = GetGDALDriverManager()->GetDriverByName("GTiff");
+        // geotiffDataset = driverGeotiff->Create(outputFilename.c_str(), ncols, nrows, 1, GDT_Float64, optionsForTIFF);
+        // geotiffDataset->SetGeoTransform(transformMatrix);
+        // // cout << "[r.writeLayer] Projection string:" << endl;
+        // // cout << layerProjection.c_str() << endl;
+        // geotiffDataset->SetProjection(layerProjection.c_str());
+        // // \todo figure out if we need to convert/cast the cvMat to float/double for all layers
+        // int errcode;
+        // double *rowBuff = (double*) CPLMalloc(sizeof(double)*ncols);
+        // geotiffDataset->GetRasterBand(1)->SetNoDataValue (noData);       
+        // for(int row=0; row<nrows; row++) {
+        //     for(int col=0; col<ncols; col++) {
+        //         rowBuff[col] = (double) tempData.at<double>(cv::Point(col,row)); // tempData should be CV_64F
+        //     }
+        //     errcode = geotiffDataset->GetRasterBand(1)->RasterIO(GF_Write, 0, row,ncols, 1, rowBuff, ncols, 1, GDT_Float64, 0, 0);
+        // }
+
+        // GDALClose(geotiffDataset) ;
+        // return NO_ERROR;
 
     // waitKey(0);
     return 0;

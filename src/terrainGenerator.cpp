@@ -8,10 +8,35 @@
  * @copyright Copyright (c) 2020
  * 
  */
+#include <opencv2/core.hpp>
 #include "terrainGenerator.h"
 
 using namespace std;
 using namespace teg;
+
+void teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersStruct func, cv::Mat img){
+    cout << "[generateTerrain] Generating [" << canvas.cols << " x " << canvas.rows << "] map" << endl;
+
+        // constant = 1,   // fixed value y = D
+        // step,           // unitary step response, y=1 if t>0
+        // ramp,           // slope=1 ramp defined for t>0
+        // pulse,          // square pulse defined for a given period 0<= t <= T, where T:1/B
+        // square,         // periodic squared signal 
+        // pwm,            // similar to square, but with user defined duty-cycle
+        // triangular,     // periodic triangular signal
+        // saw,            // saw-shaped periodic signal
+        // sine            // pure sinusoidal
+    int i, j;
+    double x, y, z;
+    switch (func.type){
+        case teg::constant:
+            
+            break;
+        default:
+            cout << red << "\t Unknown terrain type specified [" << func.type << "]" << reset << endl; 
+            break;
+    }
+}
 
 /**
  * @brief 
