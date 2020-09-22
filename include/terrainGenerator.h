@@ -51,14 +51,14 @@ namespace teg{
 
     enum WaveFormType{
         constant = 1,   // fixed value y = D
-        step,           // unitary step response, y=1 if t>0
-        ramp,           // slope=1 ramp defined for t>0
-        pulse,          // square pulse defined for a given period 0<= t <= T, where T:1/B
-        square,         // periodic squared signal 
-        pwm,            // similar to square, but with user defined duty-cycle
-        triangular,     // periodic triangular signal
-        saw,            // saw-shaped periodic signal
-        sine            // pure sinusoidal
+        step = 2,           // unitary step response, y=1 if t>0
+        ramp = 3,           // slope=1 ramp defined for t>0
+        pulse = 4,          // square pulse defined for a given period 0<= t <= T, where T:1/B
+        square = 5,         // periodic squared signal 
+        pwm = 6,            // similar to square, but with user defined duty-cycle
+        triangular = 7,     // periodic triangular signal
+        saw = 8,            // saw-shaped periodic signal
+        sine = 9            // pure sinusoidal
     };
     // configuration parameters
     typedef struct{         // Waveform parameters as defined by template:
@@ -98,6 +98,10 @@ namespace teg{
 
     double parametricTransform (double x, double y, teg::scaleParamStruct f);
 
+    inline double transform (double x, double y, double T, double theta)
+    {
+        return ((x + y)/T + theta);
+    }
 
 };
 

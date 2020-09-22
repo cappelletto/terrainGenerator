@@ -26,10 +26,17 @@ void teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersS
         // saw,            // saw-shaped periodic signal
         // sine            // pure sinusoidal
     int col, row;
-    double x, y, z;
+    double x, y, z, t;
+    double rx = cos(canvas.rotation);
+    double ry = sin(canvas.rotation);
+
+    cout << "rx " << rx << endl;
+    cout << "ry " << ry << endl;
+
+
     switch (func.type){
         case teg::constant:
-            cout << "[gt] Creating constant map [ z=" << func.offset << " ]" << endl;
+            cout << yellow << "[gt] Creating constant map [ z=" << func.offset << " ]" << reset << endl;
             for (col=0; col<canvas.cols; col++){
                 for (row=0; row<canvas.rows; row++){
                     z = func.offset;
@@ -37,6 +44,23 @@ void teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersS
                 }
             }
             break;
+
+        case teg::step:
+
+            cout << yellow << "[gt] Creating step map [ t>0, z=1" << func.offset << " ]" << reset << endl;
+            for (col=0; col<canvas.cols; col++){
+                x = canvas.xmin + col*canvas.resolution;
+                for (row=0; row<canvas.rows; row++){
+                    y = canvas.ymin + row*canvas.resolution;
+                    t = transform (x*rx, y*ry , func.period, func.phase); 
+                    z = 0;
+                    if (t>=0) z=1;
+                    z = func.amplitude*z + func.offset;
+                    img.at<double>(cv::Point(col,row)) = z;
+                }
+            }
+            break;
+
         default:
             cout << red << "\t Unknown terrain type specified [" << func.type << "]" << reset << endl; 
             break;
@@ -164,6 +188,21 @@ YAML::Node teg::readConfiguration(string filename, canvasParametersStruct *canva
             func->offset =      config["parameters"]["offset"].as<double>();
         if (config["parameters"]["period"])
             func->period =      config["parameters"]["period"].as<double>();
+        if (config["parameters"]["waveform"]){
+            string option = config["parameters"]["waveform"].as<string>();
+            if      (option == "constant")   func->type = teg::constant;
+            else if (option == "step")       func->type = teg::step;
+            else if (option == "ramp")       func->type = teg::ramp;
+            else if (option == "pulse")      func->type = teg::pulse;
+            else if (option == "square")     func->type = teg::square;
+            else if (option == "pwm")        func->type = teg::pwm;
+            else if (option == "saw")        func->type = teg::saw;
+            else if (option == "triangular") func->type = teg::triangular;
+            else if (option == "sine")       func->type = teg::sine;
+            else // uh oh, it appears to be an invalid option... let's inform the user and fall back to the existing option
+                cout << "[readConfiguration] unrecognized YAML provide waveform type: [" << yellow << option << reset <<"] " << endl;
+        }
+
     }
 
     return config;

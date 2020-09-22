@@ -80,6 +80,7 @@ int main(int argc, char *argv[])
     if (argNThreads)       numThreads          = args::get(argNThreads);
     if (argParamType){ // would love to have  aswitch statement but the arg is string (for user simplicity)
         string option = args::get(argParamType);
+        cout << "OPTION: " << option << endl;
         if      (option == "constant")   function.type = teg::constant;
         else if (option == "step")       function.type = teg::step;
         else if (option == "ramp")       function.type = teg::ramp;
@@ -124,10 +125,7 @@ int main(int argc, char *argv[])
     GDALDriver      *driverGeotiff;
     GDALRasterBand  *geotiffBand; // also declare pointers for Geotiff
 
-    int nrows  = rasterData.rows; //layerDimensions[1]
-    int ncols  = rasterData.cols; //layerDimensions[0]
-
-    cout << "[main] Dataset dimensions (COL x ROW): [" << ncols << "] x [" << nrows << "]\tNoData = [" << canvas.nodata << "]" << endl; 
+    cout << "[main] Dataset dimensions (COL x ROW): [" << canvas.cols << "] x [" << canvas.rows << "]\tNoData = [" << canvas.nodata << "]" << endl; 
 
     double transformMatrix[6];      // 6-element geotranform array.
     transformMatrix[GEOTIFF_PARAM_SX] = canvas.resolution;
@@ -138,7 +136,7 @@ int main(int argc, char *argv[])
     char **optionsForTIFF = NULL;
     optionsForTIFF = CSLSetNameValue(optionsForTIFF, "COMPRESS", "LZW");
     driverGeotiff = GetGDALDriverManager()->GetDriverByName("GTiff");
-    geotiffDataset = driverGeotiff->Create(outputFileName.c_str(), ncols, nrows, 1, GDT_Float64, optionsForTIFF);
+    geotiffDataset = driverGeotiff->Create(outputFileName.c_str(), canvas.cols, canvas.rows, 1, GDT_Float64, optionsForTIFF);
     geotiffDataset->SetGeoTransform(transformMatrix);
         // // cout << "[r.writeLayer] Projection string:" << endl;
         // // cout << layerProjection.c_str() << endl;

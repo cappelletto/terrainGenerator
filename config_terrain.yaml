@@ -18,21 +18,21 @@ output:
 
 # Waveform function template:  Y = A.f(B.x + C) + D : amplitude x func(frequency.t + phase) + offset 
 parameters:        # Landing AUV parameters
-  waveform:  constant
-  amplitude: 1.5   # A: Waveform amplitude (peak value)
-  frequency: 2.0   # B: Spatial frequency
-  phase:     0.0   # C: Spatial phase
+  waveform:  step
+  amplitude: 1.6   # A: Waveform amplitude (peak value)
+  frequency: 0.25  # B: Spatial frequency
+  phase:     -2.0   # C: Spatial phase
   offset:    0.5   # D: Offset
   period:    4.0   # 1/B: reciprocal definition of spatial frequency 
 
 canvas:
   resolution:     0.01   # [meters] per [pixel]
-  rotation:       0      # canvas rotation in degrees (CCW)
+  rotation:       0.7      # canvas rotation in degrees (CCW)
   mode:           0      # 0:depth  (positive down) or 1:height (positive up)
   usenodatamask:  true   # indicates if exported geotiff will contain NODATA fields
-  nodata:        -5555   # defines default nodata value
+  nodata:        -9999   # defines default nodata value
   extent:                # canvas limits in meters 
-    xmin:         0     
+    xmin:         0    
     xmax:         10
     ymin:         0
-    ymax:         5
+    ymax:         8
