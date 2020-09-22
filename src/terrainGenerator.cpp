@@ -8,6 +8,8 @@
  * @copyright Copyright (c) 2020
  * 
  */
+#include <math.h>
+#include <cmath>
 #include <opencv2/core.hpp>
 #include "terrainGenerator.h"
 
@@ -16,27 +18,16 @@ using namespace teg;
 
 void teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersStruct func, cv::Mat img){
     cout << "[gt] Generating [" << canvas.cols << " x " << canvas.rows << "] map" << endl;
-        // constant = 1,   // fixed value y = D
-        // step,           // unitary step response, y=1 if t>0
-        // ramp,           // slope=1 ramp defined for t>0
-        // pulse,          // square pulse defined for a given period 0<= t <= T, where T:1/B
-        // square,         // periodic squared signal 
         // pwm,            // similar to square, but with user defined duty-cycle
         // triangular,     // periodic triangular signal
-        // saw,            // saw-shaped periodic signal
-        // sine            // pure sinusoidal
-    int col, row;
-    double x, y, z, t;
-    double rx = cos(canvas.rotation);
-    double ry = sin(canvas.rotation);
-
-    cout << "rx " << rx << endl;
-    cout << "ry " << ry << endl;
-
-
+    int col, row, c;
+    double x, y, z, t, t1, t2;
+    double rx = cos(canvas.rotation * M_PI/180);
+    double ry = sin(canvas.rotation * M_PI/180);
+    double r;
     switch (func.type){
         case teg::constant:
-            cout << yellow << "[gt] Creating constant map [ z=" << func.offset << " ]" << reset << endl;
+            cout << yellow << "[gt] Creating CONSTANT map [ z=" << func.offset << " ]" << reset << endl;
             for (col=0; col<canvas.cols; col++){
                 for (row=0; row<canvas.rows; row++){
                     z = func.offset;
@@ -46,8 +37,7 @@ void teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersS
             break;
 
         case teg::step:
-
-            cout << yellow << "[gt] Creating step map [ t>0, z=1" << func.offset << " ]" << reset << endl;
+            cout << yellow << "[gt] Creating STEP map [ t>0, z=" << func.offset << " ]" << reset << endl;
             for (col=0; col<canvas.cols; col++){
                 x = canvas.xmin + col*canvas.resolution;
                 for (row=0; row<canvas.rows; row++){
@@ -55,6 +45,103 @@ void teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersS
                     t = transform (x*rx, y*ry , func.period, func.phase); 
                     z = 0;
                     if (t>=0) z=1;
+                    z = func.amplitude*z + func.offset;
+                    img.at<double>(cv::Point(col,row)) = z;
+                }
+            }
+            break;
+
+        case teg::ramp:
+            cout << yellow << "[gt] Creating RAMP map [ t>0, z=t ]" << reset << endl;
+            for (col=0; col<canvas.cols; col++){
+                x = canvas.xmin + col*canvas.resolution;
+                for (row=0; row<canvas.rows; row++){
+                    y = canvas.ymin + row*canvas.resolution;
+                    t = transform (x*rx, y*ry , func.period, func.phase); 
+                    z = 0;
+                    if (t>=0) z=t;
+                    z = func.amplitude*z + func.offset;
+                    img.at<double>(cv::Point(col,row)) = z;
+                }
+            }
+            break;
+
+        case teg::pulse:
+            cout << yellow << "[gt] Creating PULSE map [ t>0, z=t ]" << reset << endl;
+            for (col=0; col<canvas.cols; col++){
+                x = canvas.xmin + col*canvas.resolution;
+                for (row=0; row<canvas.rows; row++){
+                    y = canvas.ymin + row*canvas.resolution;
+                    t = transform (x*rx, y*ry , func.period, func.phase); 
+                    z = 0;
+                    if (t>=0 && t<=func.period) z=1;
+                    z = func.amplitude*z + func.offset;
+                    img.at<double>(cv::Point(col,row)) = z;
+                }
+            }
+            break;
+
+        case teg::sine:
+            cout << yellow << "[gt] Creating SINE map [ z=sin(t) ]" << reset << endl;
+            for (col=0; col<canvas.cols; col++){
+                x = canvas.xmin + col*canvas.resolution;
+                for (row=0; row<canvas.rows; row++){
+                    y = canvas.ymin + row*canvas.resolution;
+                    t = transform (x*rx, y*ry , func.period, func.phase); 
+                    z = sin(2*M_PI*t);
+                    z = func.amplitude*z + func.offset;
+                    img.at<double>(cv::Point(col,row)) = z;
+                }
+            }
+            break;
+
+        case teg::square:
+            cout << yellow << "[gt] Creating SQUARE map [ z=sq(t) ]" << reset << endl;
+            for (col=0; col<canvas.cols; col++){
+                x = canvas.xmin + col*canvas.resolution;
+                for (row=0; row<canvas.rows; row++){
+                    y = canvas.ymin + row*canvas.resolution;
+                    t = transform (x*rx, y*ry , func.period, func.phase); 
+                    z = 0;
+                    if (sin(2*M_PI*t)>=0) z=1;
+                    z = func.amplitude*z + func.offset;
+                    img.at<double>(cv::Point(col,row)) = z;
+                }
+            }
+            break;
+
+        case teg::saw:
+            cout << yellow << "[gt] Creating SAW map [ z=saw(t) ]" << reset << endl;
+            for (col=0; col<canvas.cols; col++){
+                x = canvas.xmin + col*canvas.resolution;
+                for (row=0; row<canvas.rows; row++){
+                    y = canvas.ymin + row*canvas.resolution;
+                    t = transform (x*rx, y*ry , func.period, func.phase); 
+                    z = t - floor(t);
+                    z = func.amplitude*z + func.offset;
+                    img.at<double>(cv::Point(col,row)) = z;
+                }
+            }
+            break;
+
+        case teg::triangular:
+            cout << yellow << "[gt] Creating TRIANGULAR map [ z=tri(t) ]" << reset << endl;
+            for (col=0; col<canvas.cols; col++){
+                x = canvas.xmin + col*canvas.resolution;
+                for (row=0; row<canvas.rows; row++){
+                    y = canvas.ymin + row*canvas.resolution;
+                    t = transform (x*rx, y*ry , func.period, func.phase); 
+                    t1 = t - floor(t);
+
+                    t = transform (x*rx, y*ry , func.period, func.phase); 
+                    t2 = t - floor(t + 0.5);
+
+                    if (t1 > t2)
+                        z = 2*(t1 - 0.5);
+                    else
+                        z = 2*(0.5 - t1);
+
+                    // z = t1 + t2;
                     z = func.amplitude*z + func.offset;
                     img.at<double>(cv::Point(col,row)) = z;
                 }

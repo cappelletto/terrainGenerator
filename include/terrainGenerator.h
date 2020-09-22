@@ -100,7 +100,7 @@ namespace teg{
 
     inline double transform (double x, double y, double T, double theta)
     {
-        return ((x + y)/T + theta);
+        return ((x + y + theta)/T);
     }
 
 };
