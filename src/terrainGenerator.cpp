@@ -15,8 +15,7 @@ using namespace std;
 using namespace teg;
 
 void teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersStruct func, cv::Mat img){
-    cout << "[generateTerrain] Generating [" << canvas.cols << " x " << canvas.rows << "] map" << endl;
-
+    cout << "[gt] Generating [" << canvas.cols << " x " << canvas.rows << "] map" << endl;
         // constant = 1,   // fixed value y = D
         // step,           // unitary step response, y=1 if t>0
         // ramp,           // slope=1 ramp defined for t>0
@@ -26,11 +25,17 @@ void teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersS
         // triangular,     // periodic triangular signal
         // saw,            // saw-shaped periodic signal
         // sine            // pure sinusoidal
-    int i, j;
+    int col, row;
     double x, y, z;
     switch (func.type){
         case teg::constant:
-            
+            cout << "[gt] Creating constant map [ z=" << func.offset << " ]" << endl;
+            for (col=0; col<canvas.cols; col++){
+                for (row=0; row<canvas.rows; row++){
+                    z = func.offset;
+                    img.at<double>(cv::Point(col,row)) = z;
+                }
+            }
             break;
         default:
             cout << red << "\t Unknown terrain type specified [" << func.type << "]" << reset << endl; 

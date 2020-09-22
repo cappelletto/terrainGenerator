@@ -21,6 +21,11 @@
 
 #include <yaml-cpp/yaml.h>
 
+#define GEOTIFF_PARAM_CX 0
+#define GEOTIFF_PARAM_CY 3
+#define GEOTIFF_PARAM_SX 1
+#define GEOTIFF_PARAM_SY 5
+
 namespace teg{
 
     //constant definitions
