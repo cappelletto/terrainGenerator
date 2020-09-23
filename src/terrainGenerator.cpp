@@ -20,10 +20,9 @@ int teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersSt
     cout << "[gt] Generating [" << canvas.cols << " x " << canvas.rows << "] map" << endl;
         // pwm,            // similar to square, but with user defined duty-cycle
     int col, row, c;
-    double x, y, z, t, t1, t2;
+    double x, y, z, t, t1, t2, r, xn, yn;
     double rx = cos(canvas.rotation * M_PI/180);
     double ry = sin(canvas.rotation * M_PI/180);
-    double r;
     switch (func.type){
         case teg::constant: // no room for error: constant value across the whole canvas
             cout << yellow << "[gt] Creating CONSTANT map [ z=" << func.offset << " ]" << reset << endl;
@@ -41,9 +40,10 @@ int teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersSt
                 x = canvas.xmin + col*canvas.resolution;
                 for (row=0; row<canvas.rows; row++){
                     y = canvas.ymin + row*canvas.resolution;
-                    x = rx*x - ry*y;
-                    y = ry*x + rx*y;
-                    t = transform (x, 0, func.period, func.phase); 
+                    xn = rx*x - ry*y;    // 2D rotation matrix
+                    yn = ry*x + rx*y;
+                    t = transform (xn, 0, func.period, func.phase); 
+
                     z = 0;
                     if (t>=0) z=1;
                     z = func.amplitude*z + func.offset;
