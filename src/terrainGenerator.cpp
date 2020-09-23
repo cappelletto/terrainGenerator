@@ -58,7 +58,10 @@ int teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersSt
                 x = canvas.xmin + col*canvas.resolution;
                 for (row=0; row<canvas.rows; row++){
                     y = canvas.ymin + row*canvas.resolution;
-                    t = transform (x*rx, y*ry , func.period, func.phase); 
+                    xn = rx*x - ry*y;    // 2D rotation matrix
+                    yn = ry*x + rx*y;
+
+                    t = transform (xn, yn , func.period, func.phase); 
                     z = 0;
                     if (t>=0) z=t;
                     z = func.amplitude*z + func.offset;
@@ -73,7 +76,9 @@ int teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersSt
                 x = canvas.xmin + col*canvas.resolution;
                 for (row=0; row<canvas.rows; row++){
                     y = canvas.ymin + row*canvas.resolution;
-                    t = transform (x*rx, y*ry , func.period, func.phase); 
+                    xn = rx*x - ry*y;    // 2D rotation matrix
+                    yn = ry*x + rx*y;
+                    t = transform (xn, 0 , func.period, func.phase); 
                     z = 0;
                     if (t>=0 && t<=func.period) z=1;
                     z = func.amplitude*z + func.offset;
@@ -88,7 +93,9 @@ int teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersSt
                 x = canvas.xmin + col*canvas.resolution;
                 for (row=0; row<canvas.rows; row++){
                     y = canvas.ymin + row*canvas.resolution;
-                    t = transform (x*rx, y*ry , func.period, func.phase); 
+                    xn = rx*x - ry*y;    // 2D rotation matrix
+                    yn = ry*x + rx*y;
+                    t = transform (xn, 0, func.period, func.phase); 
                     z = sin(2*M_PI*t);
                     z = func.amplitude*z + func.offset;
                     img.at<double>(cv::Point(col,row)) = z;
@@ -102,7 +109,9 @@ int teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersSt
                 x = canvas.xmin + col*canvas.resolution;
                 for (row=0; row<canvas.rows; row++){
                     y = canvas.ymin + row*canvas.resolution;
-                    t = transform (x*rx, y*ry , func.period, func.phase); 
+                    xn = rx*x - ry*y;    // 2D rotation matrix
+                    yn = ry*x + rx*y;
+                    t = transform (xn, 0 , func.period, func.phase); 
                     z = 0;
                     if (sin(2*M_PI*t)>=0) z=1;
                     z = func.amplitude*z + func.offset;
@@ -117,7 +126,9 @@ int teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersSt
                 x = canvas.xmin + col*canvas.resolution;
                 for (row=0; row<canvas.rows; row++){
                     y = canvas.ymin + row*canvas.resolution;
-                    t = transform (x*rx, y*ry , func.period, func.phase); 
+                    xn = rx*x - ry*y;    // 2D rotation matrix
+                    yn = ry*x + rx*y;
+                    t = transform (xn, 0 , func.period, func.phase); 
                     z = t - floor(t);
                     z = func.amplitude*z + func.offset;
                     img.at<double>(cv::Point(col,row)) = z;
@@ -131,7 +142,9 @@ int teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersSt
                 x = canvas.xmin + col*canvas.resolution;
                 for (row=0; row<canvas.rows; row++){
                     y = canvas.ymin + row*canvas.resolution;
-                    t = transform (x*rx, y*ry , func.period, func.phase); 
+                    xn = rx*x - ry*y;    // 2D rotation matrix
+                    yn = ry*x + rx*y;
+                    t = transform (xn, 0 , func.period, func.phase); 
                     t1 = t - floor(t);
                     // t = transform (x*rx, y*ry , func.period, func.phase); 
                     t2 = t - floor(t + 0.5);    // we displace half a period (theta += T/2)
@@ -152,7 +165,9 @@ int teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersSt
                 x *= func.aspectRatio;
                 for (row=0; row<canvas.rows; row++){
                     y = canvas.ymin + row*canvas.resolution;
-                    t = transform (x*x, y*y , func.period, func.phase); 
+                    xn = rx*x - ry*y;    // 2D rotation matrix
+                    yn = ry*x + rx*y;
+                    t = transform (xn, 0 , func.period, func.phase); 
                     z = exp(-(t*t)/(2*func.period*func.period));
                     z = func.amplitude*z + func.offset;
                     img.at<double>(cv::Point(col,row)) = z;
@@ -167,7 +182,9 @@ int teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersSt
                 x *= func.aspectRatio;
                 for (row=0; row<canvas.rows; row++){
                     y = canvas.ymin + (double)row*canvas.resolution;
-                    t = x*x + y*y;
+                    xn = rx*x - ry*y;    // 2D rotation matrix
+                    yn = ry*x + rx*y;
+                    t = xn*xn + yn*yn;
                     r = func.period*func.period;
                     if (t>=r) z = 0;
                     else z = sqrt(r - t);
