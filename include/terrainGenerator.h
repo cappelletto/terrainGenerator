@@ -58,7 +58,9 @@ namespace teg{
         pwm = 6,            // similar to square, but with user defined duty-cycle
         triangular = 7,     // periodic triangular signal
         saw = 8,            // saw-shaped periodic signal
-        sine = 9            // pure sinusoidal
+        sine = 9,           // pure sinusoidal
+        gaussian = 10,      // Normal Gaussian. Period is employed as sigma
+        circle = 11         // Hemisphere, where Period is used as radius
     };
     // configuration parameters
     typedef struct{         // Waveform parameters as defined by template:

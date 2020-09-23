@@ -19,7 +19,6 @@ using namespace teg;
 void teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersStruct func, cv::Mat img){
     cout << "[gt] Generating [" << canvas.cols << " x " << canvas.rows << "] map" << endl;
         // pwm,            // similar to square, but with user defined duty-cycle
-        // triangular,     // periodic triangular signal
     int col, row, c;
     double x, y, z, t, t1, t2;
     double rx = cos(canvas.rotation * M_PI/180);
@@ -132,16 +131,42 @@ void teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersS
                     y = canvas.ymin + row*canvas.resolution;
                     t = transform (x*rx, y*ry , func.period, func.phase); 
                     t1 = t - floor(t);
-
-                    t = transform (x*rx, y*ry , func.period, func.phase); 
-                    t2 = t - floor(t + 0.5);
-
+                    // t = transform (x*rx, y*ry , func.period, func.phase); 
+                    t2 = t - floor(t + 0.5);    // we displace half a period (theta += T/2)
                     if (t1 > t2)
                         z = 2*(t1 - 0.5);
                     else
                         z = 2*(0.5 - t1);
+                    z = func.amplitude*z + func.offset;
+                    img.at<double>(cv::Point(col,row)) = z;
+                }
+            }
+            break;
 
-                    // z = t1 + t2;
+        case teg::gaussian:
+            cout << yellow << "[gt] Creating GAUSSIAN map [ z=N(t,period) ]" << reset << endl;
+            for (col=0; col<canvas.cols; col++){
+                x = canvas.xmin + col*canvas.resolution;
+                for (row=0; row<canvas.rows; row++){
+                    y = canvas.ymin + row*canvas.resolution;
+                    t = transform (x*x, y*y , func.period, func.phase); 
+                    z = exp(-(t*t)/(2*func.period*func.period));
+                    z = func.amplitude*z + func.offset;
+                    img.at<double>(cv::Point(col,row)) = z;
+                }
+            }
+            break;
+
+        case teg::circle:
+            cout << yellow << "[gt] Creating CIRCLE map [ z = k -(x^2 + y^2)) ]" << reset << endl;
+            for (col=0; col<canvas.cols; col++){
+                x = canvas.xmin + (double)col*canvas.resolution;
+                for (row=0; row<canvas.rows; row++){
+                    y = canvas.ymin + (double)row*canvas.resolution;
+                    t = x*x + y*y;
+                    r = func.period*func.period;
+                    if (t>=r) z = 0;
+                    else z = sqrt(r - t);
                     z = func.amplitude*z + func.offset;
                     img.at<double>(cv::Point(col,row)) = z;
                 }
@@ -286,6 +311,8 @@ YAML::Node teg::readConfiguration(string filename, canvasParametersStruct *canva
             else if (option == "saw")        func->type = teg::saw;
             else if (option == "triangular") func->type = teg::triangular;
             else if (option == "sine")       func->type = teg::sine;
+            else if (option == "gaussian")   func->type = teg::gaussian;
+            else if (option == "circle")     func->type = teg::circle;
             else // uh oh, it appears to be an invalid option... let's inform the user and fall back to the existing option
                 cout << "[readConfiguration] unrecognized YAML provide waveform type: [" << yellow << option << reset <<"] " << endl;
         }
