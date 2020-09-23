@@ -16,7 +16,7 @@
 using namespace std;
 using namespace teg;
 
-void teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersStruct func, cv::Mat img){
+int teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersStruct func, cv::Mat img){
     cout << "[gt] Generating [" << canvas.cols << " x " << canvas.rows << "] map" << endl;
         // pwm,            // similar to square, but with user defined duty-cycle
     int col, row, c;
@@ -41,6 +41,8 @@ void teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersS
                 x = canvas.xmin + col*canvas.resolution;
                 for (row=0; row<canvas.rows; row++){
                     y = canvas.ymin + row*canvas.resolution;
+                    // x = rx*x - ry*y;
+                    // y = ry*x + rx*y;
                     t = transform (x*rx, y*ry , func.period, func.phase); 
                     z = 0;
                     if (t>=0) z=1;
@@ -147,6 +149,7 @@ void teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersS
             cout << yellow << "[gt] Creating GAUSSIAN map [ z=N(t,period) ]" << reset << endl;
             for (col=0; col<canvas.cols; col++){
                 x = canvas.xmin + col*canvas.resolution;
+                x *= func.aspectRatio;
                 for (row=0; row<canvas.rows; row++){
                     y = canvas.ymin + row*canvas.resolution;
                     t = transform (x*x, y*y , func.period, func.phase); 
@@ -161,6 +164,7 @@ void teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersS
             cout << yellow << "[gt] Creating CIRCLE map [ z = k -(x^2 + y^2)) ]" << reset << endl;
             for (col=0; col<canvas.cols; col++){
                 x = canvas.xmin + (double)col*canvas.resolution;
+                x *= func.aspectRatio;
                 for (row=0; row<canvas.rows; row++){
                     y = canvas.ymin + (double)row*canvas.resolution;
                     t = x*x + y*y;
@@ -175,8 +179,10 @@ void teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersS
 
         default:
             cout << red << "\t Unknown terrain type specified [" << func.type << "]" << reset << endl; 
+            return -1;
             break;
     }
+    return 0;
 }
 
 /**
@@ -214,6 +220,7 @@ void teg::printParams(teg::canvasParametersStruct  canvas, teg::fnParametersStru
     cout << "\tphase:      " << func.phase      << "\t[m]" << endl;
     cout << "\toffset:     " << func.offset     << "\t[m]" << endl;
     cout << "\tfrequency:  " << func.frequency  << "\t[1/m]" << endl;
+    cout << "\taspect:     " << func.aspectRatio  << "\t[m/m]" << endl;
 
     cout << endl;
 }
@@ -240,6 +247,7 @@ void teg::useDefaults(teg::canvasParametersStruct *canvas, teg::fnParametersStru
     func->offset    = 0.0;
     func->period    = 1.0;
     func->phase     = 0.0;
+    func->aspectRatio = 1.0;
 }
 
 /**
@@ -300,6 +308,8 @@ YAML::Node teg::readConfiguration(string filename, canvasParametersStruct *canva
             func->offset =      config["parameters"]["offset"].as<double>();
         if (config["parameters"]["period"])
             func->period =      config["parameters"]["period"].as<double>();
+        if (config["parameters"]["aspect"])
+            func->aspectRatio = config["parameters"]["aspect"].as<double>();
         if (config["parameters"]["waveform"]){
             string option = config["parameters"]["waveform"].as<string>();
             if      (option == "constant")   func->type = teg::constant;

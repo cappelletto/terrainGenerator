@@ -71,6 +71,7 @@ namespace teg{
         double phase;       // (C)   Spatial phase (offset)
         double offset;      // (D)   Vertical offset (ordinate axis)
         double frequency;   // (B)   Reciprocal of period
+        double aspectRatio;
     }fnParametersStruct;
 
     typedef struct{
@@ -93,7 +94,7 @@ namespace teg{
         double c;
     }scaleParamStruct;
 
-    void generateTerrain(teg::canvasParametersStruct , teg::fnParametersStruct, cv::Mat); // populate image structure with the generated map
+    int generateTerrain(teg::canvasParametersStruct , teg::fnParametersStruct, cv::Mat); // populate image structure with the generated map
     void printParams(teg::canvasParametersStruct , teg::fnParametersStruct ); // populate paras structure with default values
     void useDefaults(teg::canvasParametersStruct*, teg::fnParametersStruct*); // populate paras structure with default values
     YAML::Node readConfiguration(std::string file, teg::canvasParametersStruct*, teg::fnParametersStruct*); // populates params structure with content of the YAML file

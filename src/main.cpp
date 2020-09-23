@@ -118,7 +118,10 @@ int main(int argc, char *argv[])
     cv::Mat rasterData(canvas.rows, canvas.cols, CV_64FC1, canvas.nodata);
 
     //let's populate the image with the corresponding map
-    teg::generateTerrain (canvas, function, rasterData);
+    int rc = teg::generateTerrain (canvas, function, rasterData);
+    if (rc){
+        cout << red << "[main] Some error ocurred when calling generateTerrain, finishing..." << reset << endl;
+    }
 
     GDALAllRegister();
     GDALDataset     *geotiffDataset;
@@ -134,14 +137,30 @@ int main(int argc, char *argv[])
     transformMatrix[GEOTIFF_PARAM_CY] = canvas.ymin;
 
     char **optionsForTIFF = NULL;
+    string projectionString ="PROJCS[\"unnamed\",   \
+    GEOGCS[\"WGS 84\",  \
+        DATUM[\"WGS_1984\", \
+            SPHEROID[\"WGS 84\",6378137,298.257223563,  \
+                AUTHORITY[\"EPSG\",\"7030\"]],  \
+            AUTHORITY[\"EPSG\",\"6326\"]],  \
+        PRIMEM[\"Greenwich\",0],    \
+        UNIT[\"degree\",0.0174532925199433],    \
+        AUTHORITY[\"EPSG\",\"4326\"]],  \
+    PROJECTION[\"Transverse_Mercator\"],    \
+    PARAMETER[\"latitude_of_origin\",22.746022],    \
+    PARAMETER[\"central_meridian\",153.265781], \
+    PARAMETER[\"scale_factor\",1],  \
+    PARAMETER[\"false_easting\",0], \
+    PARAMETER[\"false_northing\",0],    \
+    UNIT[\"metre\",1,   \
+        AUTHORITY[\"EPSG\",\"9001\"]]]\"";
+
     optionsForTIFF = CSLSetNameValue(optionsForTIFF, "COMPRESS", "LZW");
     driverGeotiff = GetGDALDriverManager()->GetDriverByName("GTiff");
     geotiffDataset = driverGeotiff->Create(outputFileName.c_str(), canvas.cols, canvas.rows, 1, GDT_Float64, optionsForTIFF);
     geotiffDataset->SetGeoTransform(transformMatrix);
-        // // cout << "[r.writeLayer] Projection string:" << endl;
-        // // cout << layerProjection.c_str() << endl;
-        // geotiffDataset->SetProjection(layerProjection.c_str());
-        // // \todo figure out if we need to convert/cast the cvMat to float/double for all layers
+    geotiffDataset->SetProjection(projectionString.c_str());
+
     int errcode;
     double *rowBuff = (double*) CPLMalloc(sizeof(double)*canvas.cols);
     geotiffDataset->GetRasterBand(1)->SetNoDataValue (canvas.nodata);       
