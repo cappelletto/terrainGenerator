@@ -130,30 +130,39 @@ int main(int argc, char *argv[])
 
     cout << "[main] Dataset dimensions (COL x ROW): [" << canvas.cols << "] x [" << canvas.rows << "]\tNoData = [" << canvas.nodata << "]" << endl; 
 
-    double transformMatrix[6];      // 6-element geotranform array.
+    double transformMatrix[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};      // 6-element geotranform array.
     transformMatrix[GEOTIFF_PARAM_SX] = canvas.resolution;
     transformMatrix[GEOTIFF_PARAM_SY] = canvas.resolution;
     transformMatrix[GEOTIFF_PARAM_CX] = canvas.xmin;
     transformMatrix[GEOTIFF_PARAM_CY] = canvas.ymin;
 
     char **optionsForTIFF = NULL;
-    string projectionString ="PROJCS[\"unnamed\",   \
-    GEOGCS[\"WGS 84\",  \
-        DATUM[\"WGS_1984\", \
-            SPHEROID[\"WGS 84\",6378137,298.257223563,  \
-                AUTHORITY[\"EPSG\",\"7030\"]],  \
-            AUTHORITY[\"EPSG\",\"6326\"]],  \
-        PRIMEM[\"Greenwich\",0],    \
-        UNIT[\"degree\",0.0174532925199433],    \
-        AUTHORITY[\"EPSG\",\"4326\"]],  \
-    PROJECTION[\"Transverse_Mercator\"],    \
-    PARAMETER[\"latitude_of_origin\",22.746022],    \
-    PARAMETER[\"central_meridian\",153.265781], \
-    PARAMETER[\"scale_factor\",1],  \
-    PARAMETER[\"false_easting\",0], \
-    PARAMETER[\"false_northing\",0],    \
-    UNIT[\"metre\",1,   \
-        AUTHORITY[\"EPSG\",\"9001\"]]]\"";
+    string projectionString = "PROJCS[\"WGS 84 / Plate Carree (deprecated)\", \
+        GEOGCS[\"WGS 84\",  \
+            DATUM[\"WGS_1984\", \
+                SPHEROID[\"WGS 84\",6378137,298.257223563, \
+                    AUTHORITY[\"EPSG\",\"7030\"]], \
+                AUTHORITY[\"EPSG\",\"6326\"]], \
+            PRIMEM[\"Greenwich\",0, \
+                AUTHORITY[\"EPSG\",\"8901\"]], \
+            UNIT[\"degree\",0.0174532925199433, \
+                AUTHORITY[\"EPSG\",\"9122\"]], \
+            AUTHORITY[\"EPSG\",\"4326\"]], \
+        PROJECTION[\"Equirectangular\"], \
+        PARAMETER[\"latitude_of_origin\",0], \
+        PARAMETER[\"central_meridian\",0], \
+        PARAMETER[\"false_easting\",0], \
+        PARAMETER[\"false_northing\",0], \
+        UNIT[\"metre\",1, \
+            AUTHORITY[\"EPSG\",\"9001\"]], \
+        AXIS[\"X\",EAST], \
+        AXIS[\"Y\",NORTH], \
+        AUTHORITY[\"EPSG\",\"32662\"]]";
+
+
+//   string projectionString = "PROJCS[\"World_Plate_Carree\",GEOGCS[\"GCS_WGS_1984\",DATUM[\"WGS_1984\",SPHEROID[\"WGS_1984\",6378137,298.257223563]], \
+                               PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Plate_Carree\"],PARAMETER[\"False_Easting\",0], \
+                               PARAMETER[\"False_Northing\",0],PARAMETER[\"Central_Meridian\",0],UNIT[\"Meter\",1],AUTHORITY[\"EPSG\",\"54001\"]]";
 
     optionsForTIFF = CSLSetNameValue(optionsForTIFF, "COMPRESS", "LZW");
     driverGeotiff = GetGDALDriverManager()->GetDriverByName("GTiff");
