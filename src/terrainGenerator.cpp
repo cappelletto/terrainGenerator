@@ -61,7 +61,7 @@ int teg::generateTerrain(teg::canvasParametersStruct canvas, teg::fnParametersSt
                     xn = rx*x - ry*y;    // 2D rotation matrix
                     yn = ry*x + rx*y;
 
-                    t = transform (xn, yn , func.period, func.phase); 
+                    t = transform (xn, 0 , func.period, func.phase); 
                     z = 0;
                     if (t>=0) z=t;
                     z = func.amplitude*z + func.offset;
